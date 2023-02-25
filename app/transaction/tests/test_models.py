@@ -2,8 +2,6 @@
 Tests for models.
 """
 from django.test import TestCase
-from rest_framework.test import APIClient
-from rest_framework import status
 from django.contrib.auth import get_user_model
 from transaction.models import Transaction
 from django.db.utils import IntegrityError
@@ -40,19 +38,6 @@ class ModelTests(TestCase):
 
         self.assertEqual(transaction.value, value)
 
-
-    def test_new_transaction(self):
-        """Test creating a successful transaction."""
-        value = 10
-        transaction = Transaction()
-        transaction.to_client = self.user_1
-        transaction.from_client = self.user_2
-        transaction.value = value
-        transaction.save()
-
-        self.assertEqual(transaction.value, value)
-
-
     def test_fail_new_transaction_with_negative_vale(self):
         """Test creating a fail transaction with a negative value."""
         value = -100
@@ -64,7 +49,6 @@ class ModelTests(TestCase):
         with self.assertRaises(IntegrityError):
             transaction.save()
 
-
     def test_fail_new_transaction_with_value_0(self):
         """Test creating a fail transaction with value 0."""
         value = 0
@@ -75,7 +59,6 @@ class ModelTests(TestCase):
 
         with self.assertRaises(IntegrityError):
             transaction.save()
-
 
     def test_fail_new_transaction_same_client(self):
         """Test creating a fail transaction with same client (from and to)."""

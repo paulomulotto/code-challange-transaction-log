@@ -2,7 +2,6 @@
 Test for the Transaction API
 """
 from django.test import TestCase
-from django.contrib.auth import get_user_model
 from django.urls import reverse
 from user.tests.factory import UserFactory
 from transaction.models import Transaction
@@ -11,6 +10,7 @@ from rest_framework.test import APIClient
 from rest_framework import status
 
 CREATE_TRANSACTION_URL = reverse('transaction:create')
+
 
 class TransactionApiTests(TestCase):
     """Test Transaction API """
@@ -41,5 +41,5 @@ class TransactionApiTests(TestCase):
         transaction_exists = Transaction.objects.filter(
             from_client=self.user_1.id,
             to_client=self.user_2.id,
-        )
-
+        ).exists()
+        self.assertTrue(transaction_exists)
