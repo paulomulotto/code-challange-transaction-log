@@ -23,7 +23,7 @@ class ClientModelTests(TestCase):
             name='User 2 Name',
         )
 
-    def test_successfull_new_client_without_company(self):
+    def test_successful_new_client_without_company(self):
         """ Test creating a successful client without company"""
         client = Client()
         client.user = self.user_1
@@ -36,14 +36,14 @@ class AccountModelTests(TestCase):
         """Create user."""
         self.user_1 = UserFactory.create()
 
-    def test_successfull_new_account_without_company(self):
+    def test_successful_new_account_without_company(self):
         """Create new account without a business"""
         account = Account()
         account.client = ClientFactory.create()
         account.save()
         self.assertGreaterEqual(account.number, 1)
 
-    def test_successfull_new_account_with_company(self):
+    def test_successful_new_account_with_company(self):
         """Create new account with related to a business"""
         account = Account()
         account.client = ClientFactory.create()

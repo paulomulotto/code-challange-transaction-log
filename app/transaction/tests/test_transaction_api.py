@@ -28,7 +28,7 @@ class TransactionApiTests(TestCase):
         )
         self.client = APIClient()
 
-    def test_successfull_transaction(self):
+    def test_successful_transaction(self):
         """ Test creating a successful transacion"""
         payload = {
             'from_client': self.user_1.id,
