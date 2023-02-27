@@ -3,7 +3,7 @@ URL mapping for the Transaction API
 """
 
 from django.urls import path
-from transaction import views
+from account.transaction import views
 
 app_name = 'transaction'
 

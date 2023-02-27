@@ -2,7 +2,7 @@
 Serializers for the Transaction View.
 """
 from rest_framework import serializers
-from transaction.models import Transaction
+from account.transaction.models import Transaction
 from django.utils.translation import gettext as _
 from django.db import IntegrityError, transaction
 

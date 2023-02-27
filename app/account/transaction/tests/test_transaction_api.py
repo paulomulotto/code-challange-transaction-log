@@ -4,7 +4,7 @@ Test for the Transaction API
 from django.test import TestCase
 from django.urls import reverse
 from account.tests.factory import AccountFactory
-from transaction.models import Transaction
+from account.transaction.models import Transaction
 
 from rest_framework.test import APIClient
 from rest_framework import status

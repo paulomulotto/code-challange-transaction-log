@@ -5,7 +5,7 @@ from rest_framework import generics
 from django.db.models import Q
 from .models import Transaction
 
-from transaction.serializers import (
+from account.transaction.serializers import (
     TransactionSerializer
 )
 

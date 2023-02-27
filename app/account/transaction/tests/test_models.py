@@ -3,7 +3,7 @@ Tests for models.
 """
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from transaction.models import Transaction
+from account.transaction.models import Transaction
 from django.db.utils import IntegrityError
 
 from account.tests.factory import AccountFactory
