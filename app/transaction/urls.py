@@ -9,4 +9,5 @@ app_name = 'transaction'
 
 urlpatterns = [
     path('create/', views.CreateTransactionView.as_view(), name='create'),
+    path('list/', views.ListTransactionView.as_view(), name='list'),
 ]

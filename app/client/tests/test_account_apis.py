@@ -27,7 +27,8 @@ class AccountApiTests(TestCase):
         """ Successful test of creating account """
         payload = dict(
             client=self.client.id,
-            business=self.business.id
+            business=self.business.id,
+            balance=1000
         )
         res = self.api_client.post(reverse(CREATE_ACCOUNT_URL), payload)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
@@ -36,6 +37,7 @@ class AccountApiTests(TestCase):
         """ Successful test of creating account without business"""
         payload = dict(
             client=self.client.id,
+            balance=1000
         )
         res = self.api_client.post(reverse(CREATE_ACCOUNT_URL), payload)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
@@ -44,6 +46,16 @@ class AccountApiTests(TestCase):
         """ Failure to create an account without client """
         payload = dict(
             business=self.business
+        )
+        res = self.api_client.post(reverse(CREATE_ACCOUNT_URL), payload)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_fail_creating_account_negative_balance(self):
+        """ Successful test of creating account """
+        payload = dict(
+            client=self.client.id,
+            business=self.business.id,
+            balance=-100
         )
         res = self.api_client.post(reverse(CREATE_ACCOUNT_URL), payload)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)

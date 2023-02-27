@@ -6,33 +6,27 @@ from django.contrib.auth import get_user_model
 from transaction.models import Transaction
 from django.db.utils import IntegrityError
 
+from client.tests.factory import AccountFactory
+
 
 def create_user(**params):
     """Create and return a new user."""
     return get_user_model().objects.create_user(**params)
 
 
-class ModelTests(TestCase):
+class ModelTransactionTests(TestCase):
     """Test models."""
     def setUp(self):
         """Create user and client."""
-        self.user_1 = create_user(
-            email='user_1@example.com',
-            password='testpass123',
-            name='User 1 Name',
-        )
-        self.user_2 = create_user(
-            email='user_2@example.com',
-            password='testpass123',
-            name='User 2 Name',
-        )
+        self.account_1 = AccountFactory.create()
+        self.account_2 = AccountFactory.create()
 
     def test_new_transaction(self):
         """Test creating a successful transaction."""
         value = 9999999.99
         transaction = Transaction()
-        transaction.from_client = self.user_1
-        transaction.to_client = self.user_2
+        transaction.from_account = self.account_1
+        transaction.to_account = self.account_2
         transaction.value = value
         transaction.save()
 
@@ -42,8 +36,8 @@ class ModelTests(TestCase):
         """Test creating a fail transaction with a negative value."""
         value = -100
         transaction = Transaction()
-        transaction.to_client = self.user_1
-        transaction.from_client = self.user_2
+        transaction.to_account = self.account_1
+        transaction.from_account = self.account_2
         transaction.value = value
 
         with self.assertRaises(IntegrityError):
@@ -53,20 +47,41 @@ class ModelTests(TestCase):
         """Test creating a fail transaction with value 0."""
         value = 0
         transaction = Transaction()
-        transaction.to_client = self.user_1
-        transaction.from_client = self.user_2
+        transaction.to_account = self.account_1
+        transaction.from_account = self.account_2
         transaction.value = value
 
         with self.assertRaises(IntegrityError):
             transaction.save()
 
-    def test_fail_new_transaction_same_client(self):
+    def test_fail_new_transaction_same_account(self):
         """Test creating a fail transaction with same client (from and to)."""
         value = 0
         transaction = Transaction()
-        transaction.to_client = self.user_1
-        transaction.from_client = self.user_1
+        transaction.to_account = self.account_1
+        transaction.from_account = self.account_2
         transaction.value = value
 
         with self.assertRaises(IntegrityError):
             transaction.save()
+
+    def test_str_description(self):
+        """ Test description of transaction"""
+        Transaction()
+        value = 10
+        transaction = Transaction()
+        transaction.to_account = self.account_1
+        transaction.from_account = self.account_2
+        transaction.value = value
+        transaction.save()
+
+        description_expected = \
+            f"From Account: {transaction.from_account.number} | "\
+            f"To Account: {transaction.to_account.number} | "\
+            f"Value:  {transaction.value} | "\
+            f"Type:  {transaction.get_type_display()}"
+
+        self.assertEqual(
+            str(transaction),
+            description_expected
+        )

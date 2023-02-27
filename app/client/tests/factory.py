@@ -1,6 +1,6 @@
 from core.tests.object_factory import ObjectFactory
 from user.tests.factory import UserFactory
-from client.models import Client, Business
+from client.models import Client, Business, Account
 
 import random
 
@@ -28,3 +28,14 @@ class BusinessFactory(ObjectFactory):
         business.owner = owner or ClientFactory.create()
         business.save()
         return business
+
+
+class AccountFactory(ObjectFactory):
+    @classmethod
+    def create(cls, client=None, business=None):
+        account = Account()
+        account.client = client or ClientFactory.create()
+        account.bussiness = business or BusinessFactory.create()
+        account.balance = 10000
+        account.save()
+        return account

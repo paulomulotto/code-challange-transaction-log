@@ -40,6 +40,7 @@ class AccountModelTests(TestCase):
         """Create new account without a business"""
         account = Account()
         account.client = ClientFactory.create()
+        account.balance = 10000
         account.save()
         self.assertGreaterEqual(account.number, 1)
 
@@ -48,12 +49,23 @@ class AccountModelTests(TestCase):
         account = Account()
         account.client = ClientFactory.create()
         account.business = BusinessFactory.create()
+        account.balance = 10000
         account.save()
         self.assertGreaterEqual(account.number, 1)
 
     def test_fail_new_account_without_client(self):
         """Fail when create new account without client"""
         account = Account()
+        with self.assertRaises(IntegrityError):
+            account.save()
+
+    def test_fail_new_account_negative_balance(self):
+        """Fail when create new account without client"""
+        account = Account()
+        account.client = ClientFactory.create()
+        account.business = BusinessFactory.create()
+        account.balance = -10000
+
         with self.assertRaises(IntegrityError):
             account.save()
 
