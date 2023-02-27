@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.db.models import Q, F, constraints
-from client.models import Account
+from account.models import Account
 
 
 class Transaction(models.Model):

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from client.models import Business, Account, Client
+from client.models import Business, Client
 
 
 class BusinessSerializer(serializers.ModelSerializer):
@@ -13,13 +13,6 @@ class BusinessSerializer(serializers.ModelSerializer):
             'code': {'required': True},
             'owner': {'required': True}
         }
-
-
-class AccountSerializer(serializers.ModelSerializer):
-    """ Serializer for Account Object """
-    class Meta:
-        model = Account
-        fields = '__all__'
 
 
 class ClientSerializer(serializers.ModelSerializer):

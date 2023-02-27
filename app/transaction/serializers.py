@@ -6,7 +6,7 @@ from transaction.models import Transaction
 from django.utils.translation import gettext as _
 from django.db import IntegrityError, transaction
 
-from client.models import Account
+from account.models import Account
 
 
 class TransactionSerializer(serializers.ModelSerializer):
@@ -15,14 +15,6 @@ class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = '__all__'
-        # extra_kwargs = {
-        #     'from_account': {
-        #         "required": False
-        #     },
-        #     'to_account': {
-        #         "required": False
-        #     }
-        # }
 
     def transaction_commit(self, validated_data):
         try:

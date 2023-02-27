@@ -11,7 +11,7 @@ from rest_framework.test import APIClient
 from client.tests.factory import ClientFactory, BusinessFactory
 
 
-CREATE_ACCOUNT_URL = "client:create-account"
+CREATE_ACCOUNT_URL = "account:create-account"
 
 
 class AccountApiTests(TestCase):

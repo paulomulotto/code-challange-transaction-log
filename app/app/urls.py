@@ -33,6 +33,8 @@ urlpatterns = [
     path('api/user/', include('user.urls')),
     path('api/transaction/', include('transaction.urls')),
     path('api/client/', include('client.urls')),
+    path('api/account/', include('account.urls')),
+
 
 
 ]

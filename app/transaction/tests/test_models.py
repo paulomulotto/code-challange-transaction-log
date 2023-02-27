@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from transaction.models import Transaction
 from django.db.utils import IntegrityError
 
-from client.tests.factory import AccountFactory
+from account.tests.factory import AccountFactory
 
 
 def create_user(**params):

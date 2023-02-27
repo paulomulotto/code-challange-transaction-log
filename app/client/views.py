@@ -1,10 +1,10 @@
 from rest_framework import generics
-from client.models import Business, Account
+from client.models import Business
 from client.serializers import (
         BusinessSerializer,
-        AccountSerializer,
         ClientSerializer,
     )
+from account.models import Account
 
 
 class CreateBusinessView(generics.CreateAPIView):
@@ -16,10 +16,6 @@ class UpdateBusinessView(generics.UpdateAPIView):
     """ Update a business """
     serializer_class = BusinessSerializer
     queryset = Business.objects.all()
-
-
-class CreateAccountView(generics.CreateAPIView):
-    serializer_class = AccountSerializer
 
 
 class CreateClientView(generics.CreateAPIView):
