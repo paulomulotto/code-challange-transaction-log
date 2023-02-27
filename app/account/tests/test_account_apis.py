@@ -7,11 +7,13 @@ from django.urls import reverse
 from rest_framework import status
 
 from rest_framework.test import APIClient
+from account.tests.factory import AccountFactory
 
 from client.tests.factory import ClientFactory, BusinessFactory
 
 
 CREATE_ACCOUNT_URL = "account:create-account"
+GET_BALANCE_URL = "account:balance"
 
 
 class AccountApiTests(TestCase):
@@ -59,3 +61,18 @@ class AccountApiTests(TestCase):
         )
         res = self.api_client.post(reverse(CREATE_ACCOUNT_URL), payload)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_get_balance(self):
+        """ Test get balance of an Account user"""
+        self.api_client.force_authenticate(user=self.client.user)
+
+        balance = 900
+        account = AccountFactory.create(client=self.client, balance=balance)
+
+        self.api_client.force_login(account.client.user)
+
+        url = reverse(GET_BALANCE_URL)
+
+        res = self.api_client.get(url)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data['balance'], balance)

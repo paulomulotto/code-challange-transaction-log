@@ -38,7 +38,7 @@ class AccountModelTests(TestCase):
             account.save()
 
     def test_fail_new_account_negative_balance(self):
-        """Fail when create new account without client"""
+        """Fail when create new account with negative balance"""
         account = Account()
         account.client = ClientFactory.create()
         account.business = BusinessFactory.create()
@@ -46,3 +46,55 @@ class AccountModelTests(TestCase):
 
         with self.assertRaises(IntegrityError):
             account.save()
+
+    def test_fail_more_than_one_account_same_client_without_business(self):
+        """Fail when create new account for the same
+        client without business """
+        account = Account()
+        account.client = ClientFactory.create()
+        account.balance = 100
+        account.save()
+
+        account_2 = Account()
+        account_2.client = account.client
+        account_2.balance = 150
+
+        with self.assertRaises(IntegrityError):
+            account_2.save()
+
+    def test_fail_more_than_one_account_same_client_same_business(self):
+        """Fail when create new account for the same and
+        client same business """
+        account = Account()
+        account.client = ClientFactory.create()
+        account.business = BusinessFactory.create()
+        account.balance = 100
+        account.save()
+
+        account_2 = Account()
+        account_2.client = account.client
+        account_2.business = account.business
+        account_2.balance = 150
+
+        with self.assertRaises(IntegrityError):
+            account_2.save()
+
+    def test_success_more_than_one_account_diff_business(self):
+        """Success when create new account for the same
+        client with diff business"""
+        account = Account()
+        account.client = ClientFactory.create()
+        account.balance = 100
+        account.save()
+
+        account_2 = Account()
+        account_2.client = account.client
+        account_2.business = BusinessFactory.create()
+        account_2.balance = 150
+        account_2.save()
+
+        account_3 = Account()
+        account_3.client = account.client
+        account_3.business = BusinessFactory.create()
+        account_3.balance = 150
+        account_3.save()

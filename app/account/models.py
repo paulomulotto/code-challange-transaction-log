@@ -19,12 +19,17 @@ class Account(models.Model):
         blank=True, null=True,
         default=None
     )
-    is_active = models.BooleanField(default=True)
 
     class Meta:
         constraints = [
             constraints.CheckConstraint(
                 check=Q(balance__gt=0),
                 name='balance_positive'
-            )
+            ),
+            models.UniqueConstraint(
+                fields=['client', 'business'], name="unique_client_business"),
+            models.UniqueConstraint(
+                fields=['client'],
+                condition=Q(business=None),
+                name="unique_client"),
         ]
