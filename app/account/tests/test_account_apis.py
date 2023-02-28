@@ -62,17 +62,29 @@ class AccountApiTests(TestCase):
         res = self.api_client.post(reverse(CREATE_ACCOUNT_URL), payload)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_get_balance(self):
-        """ Test get balance of an Account user"""
-        self.api_client.force_authenticate(user=self.client.user)
-
+    def test_get_balance_with_business(self):
+        """ Test get balance of an Business Account user"""
         balance = 900
         account = AccountFactory.create(client=self.client, balance=balance)
 
-        self.api_client.force_login(account.client.user)
+        self.api_client.force_authenticate(user=account.client.user)
+
+        url = f'{reverse(GET_BALANCE_URL)}?business_id={account.business.pk}'
+        res = self.api_client.get(url)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data['balance'], balance)
+
+    def test_get_balance_without_business(self):
+        """ Test get balance of an Account user"""
+        balance = 900
+        account = AccountFactory.create(
+            client=self.client, balance=balance, with_business=False)
+
+        self.api_client.force_authenticate(user=account.client.user)
 
         url = reverse(GET_BALANCE_URL)
-
         res = self.api_client.get(url)
+
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['balance'], balance)
