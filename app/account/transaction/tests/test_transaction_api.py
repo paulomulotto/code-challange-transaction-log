@@ -422,3 +422,54 @@ class TransactionApiTests(TestCase):
         res = self.api_client.get(
             reverse(GET_TRANSACTION_URL, args=[id_transaction_1]))
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_filter_business(self):
+        """ Test business filter """
+        account_client = self.from_account
+        self.api_client.force_authenticate(account_client.client.user)
+
+        business_1_account = self.to_account
+        value = 10
+        payload = {
+            'from_account': account_client.number,
+            'to_account': business_1_account.number,
+            'value': value,
+            'type': Transaction.EXPENSES
+        }
+        res = self.api_client.post(CREATE_TRANSACTION_URL, payload)
+        id_transaction_1 = res.data['id']
+
+        value = 20
+        business_2_account = self.to_4_account
+        payload = {
+            'from_account': account_client.number,
+            'to_account': business_2_account.number,
+            'value': value,
+            'type': Transaction.EXPENSES
+        }
+        res = self.api_client.post(CREATE_TRANSACTION_URL, payload)
+        id_transaction_2 = res.data['id']
+
+        # Test Business 1 Transaction Only
+        res = self.api_client.get(
+            f'{LIST_TRANSACTION_URL}'
+            f'?business_id={business_1_account.business.pk}'
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        transactions_returned = []
+        for transaction in res.data:
+            transactions_returned.append(transaction['id'])
+        self.assertListEqual(
+            [id_transaction_1], transactions_returned)
+
+        # Test Business 2 Transaction Only
+        res = self.api_client.get(
+            f'{LIST_TRANSACTION_URL}'
+            f'?business_id={business_2_account.business.pk}'
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        transactions_returned = []
+        for transaction in res.data:
+            transactions_returned.append(transaction['id'])
+        self.assertListEqual(
+            [id_transaction_2], transactions_returned)

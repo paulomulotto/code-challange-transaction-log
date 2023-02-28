@@ -28,7 +28,7 @@ class TransactionViewSet(
     permission_classes = [permissions.IsAuthenticated]
 
     def apply_date_filter(self, queryset, start_date_str, end_date_str):
-        """" Build filter based on date range"""
+        """" Apply date range filter if necessary """
         if start_date_str is not None and end_date_str is not None:
             start_date = datetime.strptime(
                 start_date_str, '%Y/%m/%d %H:%M:%S.%f')
@@ -40,9 +40,15 @@ class TransactionViewSet(
         return queryset
 
     def apply_type_filter(self, queryset, transaction_type=None):
-        """" Build filter based on transaction type"""
+        """ Apply type transaction filter if necessary"""
         if transaction_type is not None:
             queryset = queryset.filter(type=transaction_type)
+        return queryset
+
+    def apply_business_filter(self, queryset, business_id=None):
+        """ Apply Business filter if necessary"""
+        if business_id is not None:
+            queryset = queryset.filter(to_account__business=business_id)
         return queryset
 
     def get_queryset(self):
@@ -59,5 +65,8 @@ class TransactionViewSet(
 
         transaction_type = self.request.query_params.get('transaction_type')
         queryset = self.apply_type_filter(queryset, transaction_type)
+
+        business_id = self.request.query_params.get('business_id')
+        queryset = self.apply_business_filter(queryset, business_id)
 
         return queryset
