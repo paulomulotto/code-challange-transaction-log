@@ -27,8 +27,11 @@ class TransactionViewSet(
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
-    def apply_date_filter(self, queryset, start_date_str, end_date_str):
+    def filter_date_range(self, queryset):
         """" Apply date range filter if necessary """
+        start_date_str = self.request.query_params.get('start_date')
+        end_date_str = self.request.query_params.get('end_date')
+
         if start_date_str is not None and end_date_str is not None:
             start_date = datetime.strptime(
                 start_date_str, '%Y/%m/%d %H:%M:%S.%f')
@@ -39,34 +42,44 @@ class TransactionViewSet(
             queryset = queryset.filter(date_filter)
         return queryset
 
-    def apply_type_filter(self, queryset, transaction_type=None):
+    def filter_transaction_type(self, queryset):
         """ Apply type transaction filter if necessary"""
+        transaction_type = self.request.query_params.get('transaction_type')
         if transaction_type is not None:
             queryset = queryset.filter(type=transaction_type)
         return queryset
 
-    def apply_business_filter(self, queryset, business_id=None):
-        """ Apply Business filter if necessary"""
+    def filter_owner_user(self, queryset):
+        """ Apply user filter.
+            * Should always exists an users as auth is mandatory
+            to access this function
+        """
+        user = self.request.user
+        queryset = queryset.filter(
+            Q(from_account__client__user=user) |
+            Q(to_account__client__user=user)
+        )
+        return queryset
+
+    def filter_business_id(self, queryset):
+        """ Apply business filter if necessary"""
+        business_id = self.request.query_params.get('business_id')
         if business_id is not None:
             queryset = queryset.filter(to_account__business=business_id)
         return queryset
 
+    def apply_custom_filters(self, queryset):
+        """ Build all filters """
+        for name_attr in dir(self):
+            if name_attr.startswith('filter_'):
+                attr = getattr(self, name_attr)
+                if callable(attr):
+                    filter_function = attr
+                    queryset = filter_function(queryset)
+        return queryset
+
     def get_queryset(self):
-        user = self.request.user
-        queryset = Transaction.objects.filter(
-            Q(from_account__client__user=user) |
-            Q(to_account__client__user=user)
-        )
-
-        start_date_str = self.request.query_params.get('start_date')
-        end_date_str = self.request.query_params.get('end_date')
-        queryset = self.apply_date_filter(
-            queryset, start_date_str, end_date_str)
-
-        transaction_type = self.request.query_params.get('transaction_type')
-        queryset = self.apply_type_filter(queryset, transaction_type)
-
-        business_id = self.request.query_params.get('business_id')
-        queryset = self.apply_business_filter(queryset, business_id)
-
+        """Get the query set for transactions"""
+        queryset = Transaction.objects.all()
+        queryset = self.apply_custom_filters(queryset)
         return queryset
