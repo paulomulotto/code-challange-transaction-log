@@ -1,13 +1,13 @@
 """"
 URL mapping for the Transaction API
 """
-
 from django.urls import path
 from account.transaction import views
+from rest_framework.routers import DefaultRouter
 
 app_name = 'transaction'
 
-urlpatterns = [
-    path('create/', views.CreateTransactionView.as_view(), name='create'),
-    path('list/', views.ListTransactionView.as_view(), name='list'),
-]
+router = DefaultRouter()
+router.register(r'', views.TransactionViewSet, basename='transaction')
+
+urlpatterns = router.urls

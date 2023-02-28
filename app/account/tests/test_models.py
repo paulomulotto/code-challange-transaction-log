@@ -98,3 +98,14 @@ class AccountModelTests(TestCase):
         account_3.business = BusinessFactory.create()
         account_3.balance = 150
         account_3.save()
+
+    def test_str_description(self):
+        """ Test description of transaction"""
+        account = Account()
+        account.client = ClientFactory.create()
+        account.balance = 100
+        account.save()
+        self.assertEqual(
+            str(account),
+            f'{account.number}'
+        )

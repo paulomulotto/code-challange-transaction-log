@@ -37,8 +37,8 @@ class Transaction(models.Model):
 
     def __str__(self):
         description = \
-            f"From Account: {self.from_account.number} | "\
-            f"To Account: {self.to_account.number} | "\
+            f"From Account: {self.from_account  or '-'} | "\
+            f"To Account: {self.to_account or '-'} | "\
             f"Value:  {self.value} | "\
             f"Type:  {self.get_type_display()}"
 

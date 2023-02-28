@@ -20,6 +20,11 @@ class Account(models.Model):
         default=None
     )
 
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.number)
+
     class Meta:
         constraints = [
             constraints.CheckConstraint(
