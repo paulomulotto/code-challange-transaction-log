@@ -22,9 +22,6 @@ class TransactionViewSet(
     """
     A viewset that provides `retrieve`, `create`, and `list`
     actions from Transactions.
-
-    To use it, override the class and set the `.queryset` and
-    `.serializer_class` attributes.
     """
     serializer_class = TransactionSerializer
     authentication_classes = [authentication.TokenAuthentication]

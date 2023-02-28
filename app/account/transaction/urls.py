@@ -1,7 +1,6 @@
 """"
 URL mapping for the Transaction API
 """
-from django.urls import path
 from account.transaction import views
 from rest_framework.routers import DefaultRouter
 

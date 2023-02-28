@@ -370,7 +370,8 @@ class TransactionApiTests(TestCase):
         for transaction in res.data:
             transactions_returned.append(transaction['id'])
         self.assertListEqual(
-            [id_transaction_1, id_transaction_2, id_transaction_3], transactions_returned)
+            [id_transaction_1, id_transaction_2, id_transaction_3],
+            transactions_returned)
 
     def test_restrict_access_transactions(self):
         """ Test that users can see only their own transactions """
