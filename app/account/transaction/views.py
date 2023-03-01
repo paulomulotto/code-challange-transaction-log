@@ -22,6 +22,19 @@ class TransactionViewSet(
     """
     A viewset that provides `retrieve`, `create`, and `list`
     actions from Transactions.
+
+    Filter Transactions with query params:
+    By Range date:
+    - Params: start_date and end_dat. format: '%Y/%m/%d %H:%M:%S.%f'
+
+    By Type:
+    - Params: transaction_type
+        - 'DP' for DEPOSITS;
+        - 'WD' for WITHDRAWALS,
+        - 'EX' for EXPENSES
+
+    By Business
+    - Params: business_id
     """
     serializer_class = TransactionSerializer
     authentication_classes = [authentication.TokenAuthentication]
